@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>El camino del mantenimiento preventivo</title>
-<meta name="description" content="Cómo se crea un dashboard de mantenimiento: primera conversación, registro y diseño, medición de procesos y seguimiento para decidir con datos.">
+<meta name="description" content="Plexi Gestión: cómo creamos un dashboard de mantenimiento para tomar decisiones basadas en datos.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -67,6 +67,12 @@
   .preview img{display:block;width:100%;height:auto}
   .preview figcaption{font-size:13px;color:var(--ink-soft);margin-top:10px}
   .preview figcaption a{font-weight:600}
+
+  /* ---------- Quiénes somos ---------- */
+  .about{padding-bottom:56px}
+  .about h2{font-size:20px;margin-bottom:8px}
+  .about p{font-size:15px}
+  .about p + p{margin-top:8px}
 
   /* ---------- Tablas ---------- */
   .table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);font-size:13.5px;line-height:1.5;margin-top:20px}
@@ -151,7 +157,7 @@
     <div class="logo" aria-hidden="true">
       <svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.2-.5-.5-2.2z"/></svg>
     </div>
-    Gestión de Mantenimiento
+    Plexi Gestión
   </div>
   <a class="btn" href="dashboard.html">Ver el dashboard</a>
 </header>
@@ -160,15 +166,15 @@
 
   <div class="hero wrap">
     <h1>El camino del mantenimiento preventivo</h1>
-    <p>Así se crea un dashboard de mantenimiento para tomar decisiones basadas en datos. Empieza con una conversación para entender el área y sigue por tres etapas: registrar y diseñar, medir los procesos, y construir el dashboard para darle seguimiento.</p>
+    <p>Así creamos un dashboard de mantenimiento para tomar decisiones basadas en datos. Empezamos con una conversación sobre tu área y avanzamos en tres etapas: ordenar el registro, medir y dar seguimiento.</p>
 
     <nav aria-label="Hoja de ruta">
       <ol class="route">
-        <li><a href="#conversacion"><span class="node start" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H10l-5 4v-4H4z"/></svg></span><strong>Primera conversación</strong><span class="hint">Entender el estado del área</span></a></li>
-        <li><a href="#registro"><span class="node" aria-hidden="true">1</span><strong>Registro documental y diseño</strong><span class="hint">Indicadores según los objetivos del año</span></a></li>
-        <li><a href="#medicion"><span class="node" aria-hidden="true">2</span><strong>Medición de datos con KPIs</strong><span class="hint">Los procesos se vuelven números</span></a></li>
-        <li><a href="#dashboard"><span class="node" aria-hidden="true">3</span><strong>Dashboard y seguimiento</strong><span class="hint">Calidad de datos y reportes</span></a></li>
-        <li><a href="#decisiones"><span class="node goal" aria-hidden="true"></span><strong>Decisiones basadas en datos</strong><span class="hint">El objetivo del recorrido</span></a></li>
+        <li><a href="#conversacion"><span class="node start" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H10l-5 4v-4H4z"/></svg></span><strong>Primera conversación</strong><span class="hint">Conocer cómo trabaja tu área</span></a></li>
+        <li><a href="#registro"><span class="node" aria-hidden="true">1</span><strong>Registro documental y diseño</strong><span class="hint">Ordenar datos y elegir indicadores</span></a></li>
+        <li><a href="#medicion"><span class="node" aria-hidden="true">2</span><strong>Medición de datos con KPIs</strong><span class="hint">Convertir el trabajo en números</span></a></li>
+        <li><a href="#dashboard"><span class="node" aria-hidden="true">3</span><strong>Dashboard y seguimiento</strong><span class="hint">Cuidar los datos y revisar reportes</span></a></li>
+        <li><a href="#decisiones"><span class="node goal" aria-hidden="true"></span><strong>Decisiones basadas en datos</strong><span class="hint">El objetivo del camino</span></a></li>
       </ol>
     </nav>
   </div>
@@ -177,8 +183,14 @@
     <a class="shot" href="dashboard.html">
       <img src="10.jpg" width="1535" height="743" alt="Abrir el dashboard. Muestra del panel de mantenimiento con indicadores, gráficos, costos por área y órdenes del día">
     </a>
-    <figcaption>Muestra del dashboard con datos de demostración. <a href="dashboard.html">Abrir el dashboard</a></figcaption>
+    <figcaption>Así se ve el dashboard, con datos de demostración. <a href="dashboard.html">Abrir el dashboard</a></figcaption>
   </figure>
+
+  <section class="about wrap" aria-labelledby="quienes">
+    <h2 id="quienes">Quiénes somos</h2>
+    <p>Soy Uziel Orozco, de Plexi Gestión. Ayudamos a pymes a mejorar la gestión de cada área con herramientas de ingeniería en calidad, para tomar mejores decisiones basadas en datos y avanzar en la mejora continua.</p>
+    <p>Este dashboard es una de las herramientas que integramos para que cada gerente pueda cumplir sus objetivos anuales.</p>
+  </section>
 
   <div class="wrap">
     <div class="path">
@@ -186,19 +198,19 @@
       <section class="stage" id="conversacion">
         <span class="node start" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H10l-5 4v-4H4z"/></svg></span>
         <h2>Primera conversación</h2>
-        <p>Antes de diseñar una pantalla hay que entender cómo trabaja hoy el área de mantenimiento y qué pasos hacen falta para llegar al dashboard.</p>
+        <p>Antes de diseñar nada, necesitamos entender cómo trabaja hoy tu área de mantenimiento y qué pasos faltan para llegar al dashboard.</p>
 
-        <h3>De qué se habla</h3>
+        <h3>De qué hablamos</h3>
         <ul>
-          <li>Qué activos hay y cuáles detienen la operación cuando fallan.</li>
-          <li>Cómo se pide, se hace y se anota hoy cada trabajo.</li>
-          <li>Qué datos existen y dónde están: papel, planillas o la memoria del equipo.</li>
-          <li>Qué objetivos tiene el área para este año.</li>
-          <li>Quién va a leer los reportes y cada cuánto.</li>
+          <li>Qué activos tienes y cuáles detienen la operación cuando fallan.</li>
+          <li>Cómo se pide, se hace y se anota cada trabajo.</li>
+          <li>Qué datos existen y dónde están: en papel, en planillas o en la memoria de los técnicos.</li>
+          <li>Qué objetivos tiene el área este año.</li>
+          <li>Quién va a leer los reportes y con qué frecuencia.</li>
         </ul>
 
-        <h3>Dónde está hoy el área</h3>
-        <p>La conversación sirve para ubicar el punto de partida entre un área que reacciona a las fallas y una que se anticipa a ellas.</p>
+        <h3>Dónde está hoy tu área</h3>
+        <p>Ubicamos tu punto de partida: cuánto reacciona el área a las fallas y cuánto se anticipa a ellas.</p>
         <table class="table">
           <thead><tr><th scope="col">Qué cambia</th><th scope="col">Área reactiva</th><th scope="col">Área profesionalizada</th></tr></thead>
           <tbody>
@@ -206,27 +218,27 @@
             <tr><th scope="row">Historial</th><td data-label="Reactiva">La memoria de cada técnico</td><td data-label="Profesionalizada">Las órdenes de trabajo</td></tr>
             <tr><th scope="row">Prioridades</th><td data-label="Reactiva">La urgencia del momento</td><td data-label="Profesionalizada">La criticidad de cada activo</td></tr>
             <tr><th scope="row">Presupuesto</th><td data-label="Reactiva">Se explica después de gastar</td><td data-label="Profesionalizada">Se sigue mes a mes por área</td></tr>
-            <tr><th scope="row">Decisiones</th><td data-label="Reactiva">Por intuición</td><td data-label="Profesionalizada">Con datos</td></tr>
+            <tr><th scope="row">Decisiones</th><td data-label="Reactiva">Por intuición</td><td data-label="Profesionalizada">Basadas en datos</td></tr>
           </tbody>
         </table>
 
-        <p class="gate"><b>Resultado:</b> un diagnóstico del área y la lista de pasos para crear su dashboard.</p>
+        <p class="gate"><b>Resultado:</b> un diagnóstico de tu área y la lista de pasos para crear el dashboard.</p>
       </section>
 
       <section class="stage" id="registro">
         <span class="node" aria-hidden="true">1</span>
         <h2>Registro documental y diseño del dashboard</h2>
-        <p>En esta etapa se ordena la información del área y se define qué tiene que mostrar el dashboard para cumplir los objetivos del año.</p>
+        <p>Ordenamos la información del área y definimos qué debe mostrar el dashboard para cumplir los objetivos del año.</p>
 
-        <h3>Registro documental del área</h3>
+        <h3>Registro documental</h3>
         <ul>
-          <li>Listar los activos y darle un código a cada uno.</li>
-          <li>Definir cuáles son críticos para la operación.</li>
-          <li>Armar el plan preventivo, con la frecuencia de cada tarea.</li>
-          <li>Usar una sola orden de trabajo para todo, también para las urgencias.</li>
+          <li>Hacemos la lista de activos y le damos un código a cada uno.</li>
+          <li>Definimos cuáles son críticos para la operación.</li>
+          <li>Armamos el plan preventivo, con la frecuencia de cada tarea.</li>
+          <li>Dejamos una sola orden de trabajo para todo, también para las urgencias.</li>
         </ul>
 
-        <p style="margin-top:16px">Vamos a seguir una orden por todo el recorrido. Es de demostración y es la misma que aparece en el dashboard.</p>
+        <p style="margin-top:16px">Para ver cómo se conecta todo, sigamos una orden de ejemplo, la misma que aparece en el dashboard.</p>
         <div class="sheet">
           <div class="sheet-h"><b>OT004976<br>Cambio de rodamiento</b><span class="pill bad">Urgente</span></div>
           <dl>
@@ -242,36 +254,36 @@
         </div>
 
         <h3>Indicadores según los objetivos anuales</h3>
-        <p>Cada indicador entra al dashboard porque mide un objetivo del año. Estos son ejemplos:</p>
+        <p>Un indicador entra al dashboard solo si ayuda a medir un objetivo del año. Por ejemplo:</p>
         <table class="table">
           <thead><tr><th scope="col">Objetivo anual</th><th scope="col">Indicadores que lo miden</th></tr></thead>
           <tbody>
-            <tr><th scope="row">Menos paros en los equipos críticos</th><td data-label="Indicadores">Disponibilidad y MTBF</td></tr>
+            <tr><th scope="row">Menos paros en los activos críticos</th><td data-label="Indicadores">Disponibilidad y MTBF</td></tr>
             <tr><th scope="row">Reparar más rápido</th><td data-label="Indicadores">MTTR</td></tr>
-            <tr><th scope="row">Pasar de reaccionar a planificar</th><td data-label="Indicadores">Trabajo planeado, cumplimiento del preventivo y del cronograma, y backlog</td></tr>
+            <tr><th scope="row">Planificar en lugar de reaccionar</th><td data-label="Indicadores">Trabajo planeado, cumplimiento del preventivo y del cronograma, y backlog</td></tr>
             <tr><th scope="row">Cuidar el presupuesto</th><td data-label="Indicadores">Desvío de costo por área</td></tr>
           </tbody>
         </table>
 
         <h3>Diseño del dashboard</h3>
-        <p>Antes de construirlo se acuerda qué se verá en pantalla:</p>
+        <p>Antes de construirlo, acordamos contigo qué se verá en pantalla:</p>
         <ul>
-          <li>Los indicadores, cada uno con su meta y su semáforo.</li>
+          <li>Cada indicador con su meta y su semáforo.</li>
           <li>La evolución mes a mes.</li>
           <li>El trabajo planeado frente al correctivo.</li>
-          <li>El costo de cada área contra su presupuesto.</li>
+          <li>El costo de cada área frente a su presupuesto.</li>
           <li>Las órdenes del día, las alertas y los activos críticos.</li>
         </ul>
 
-        <p class="gate"><b>Se pasa a la etapa 2</b> cuando el área registra con una sola orden de trabajo, los indicadores responden a los objetivos del año y el diseño está aprobado.</p>
+        <p class="gate"><b>Pasamos a la etapa 2</b> cuando todo trabajo se registra en la misma orden, los indicadores responden a los objetivos del año y apruebas el diseño.</p>
       </section>
 
       <section class="stage" id="medicion">
         <span class="node" aria-hidden="true">2</span>
         <h2>Medición de datos con KPIs</h2>
-        <p>Con el registro en marcha se aplican los indicadores y se miden los procesos que van a alimentar el dashboard.</p>
+        <p>Con el registro en marcha, aplicamos los KPIs, o indicadores clave de desempeño, y medimos los procesos que alimentan el dashboard.</p>
 
-        <h3>Qué se mide en cada paso del trabajo</h3>
+        <h3>Qué se registra en cada paso del trabajo</h3>
         <table class="table">
           <thead><tr><th scope="col">Paso</th><th scope="col">Datos que quedan en la orden</th></tr></thead>
           <tbody>
@@ -283,7 +295,7 @@
         </table>
 
         <h3>Cómo se calcula cada indicador</h3>
-        <p>Los indicadores salen de los campos de las órdenes. Por eso la calidad del registro decide la calidad de la medición.</p>
+        <p>Los indicadores se calculan con los datos de las órdenes. Si el registro es malo, la medición también.</p>
         <table class="table">
           <thead><tr><th scope="col">Indicador</th><th scope="col">Cómo se calcula</th><th scope="col">Meta</th><th scope="col">Qué hay que registrar</th></tr></thead>
           <tbody>
@@ -299,16 +311,16 @@
         </table>
 
         <h3>Qué aporta la OT004976</h3>
-        <p>Es una falla, así que cuenta para el MTBF. Sus horas de reparación entran en el MTTR, el paro del compresor baja la disponibilidad, al ser correctiva reduce el porcentaje de trabajo planeado y su costo pesa en el presupuesto de compresores.</p>
-        <p class="caption">Algunos indicadores son adelantados, como el cumplimiento del preventivo, y avisan antes del problema. Otros son rezagados, como la disponibilidad, y muestran el resultado.</p>
+        <p>Esta sola orden mueve cinco indicadores: cuenta como falla para el MTBF, suma horas al MTTR, su paro baja la disponibilidad, al ser correctiva reduce el trabajo planeado y su costo pesa en el presupuesto de compresores.</p>
+        <p class="caption">Algunos indicadores avisan antes del problema, como el cumplimiento del preventivo. Otros muestran el resultado, como la disponibilidad.</p>
 
-        <p class="gate"><b>Se pasa a la etapa 3</b> cuando los indicadores se calculan igual todos los meses, cada uno tiene meta y responsable, y hay un valor inicial para comparar.</p>
+        <p class="gate"><b>Pasamos a la etapa 3</b> cuando los indicadores se calculan igual todos los meses, cada uno tiene meta y responsable, y hay un valor inicial con el que comparar.</p>
       </section>
 
       <section class="stage" id="dashboard">
         <span class="node" aria-hidden="true">3</span>
         <h2>Creación del dashboard y seguimiento</h2>
-        <p>El dashboard junta los indicadores en una pantalla, con su meta, su semáforo y su tendencia. Quien dirige el área ya no revisa orden por orden: ve dónde está el desvío y entra a ese detalle.</p>
+        <p>Reunimos los indicadores en una pantalla, con su meta, su semáforo y su tendencia. El gerente ya no revisa orden por orden: ve dónde está el desvío y entra a ese detalle.</p>
 
         <div class="tiles">
           <div class="tile warn"><div class="name">Disponibilidad de activos</div><div class="val">96,8&nbsp;%</div><div class="state">Atención</div></div>
@@ -319,14 +331,14 @@
         <p class="caption">Valores de demostración de la gestión 2026.</p>
         <a class="btn" href="dashboard.html">Abrir el dashboard completo</a>
 
-        <h3>Seguimiento de la calidad de los datos</h3>
-        <p>Un dashboard con datos incompletos lleva a decisiones equivocadas. Por eso se revisan de forma periódica:</p>
+        <h3>Calidad de los datos</h3>
+        <p>Con datos incompletos, las decisiones salen mal. Por eso revisamos periódicamente:</p>
         <ul>
           <li>Órdenes cerradas sin horas, causa o costo.</li>
           <li>Órdenes vencidas o sin técnico asignado.</li>
-          <li>Órdenes mal clasificadas entre preventivas y correctivas.</li>
+          <li>Órdenes preventivas y correctivas mal clasificadas.</li>
           <li>Fechas imposibles, como un cierre anterior al inicio.</li>
-          <li>Trabajos hechos sobre activos sin código.</li>
+          <li>Trabajos hechos en activos sin código.</li>
         </ul>
 
         <h3>Seguimiento de reportes</h3>
@@ -340,7 +352,7 @@
           </tbody>
         </table>
 
-        <p class="gate"><b>La etapa funciona</b> cuando cada reporte se revisa en su fecha y cada desvío termina en una acción con responsable y plazo.</p>
+        <p class="gate"><b>La etapa funciona</b> cuando cada reporte se revisa a tiempo y cada desvío termina en una acción con responsable y plazo.</p>
       </section>
 
     </div>
@@ -349,7 +361,7 @@
   <section class="goalbox" id="decisiones">
     <div class="wrap">
       <h2><span class="node goal" aria-hidden="true"></span>Mejores decisiones basadas en datos</h2>
-      <p>Este es el objetivo final. El registro, los indicadores y el dashboard valen cuando un número cambia lo que se hace.</p>
+      <p>Aquí está el objetivo del camino. El registro, los indicadores y el dashboard valen la pena cuando un número cambia lo que haces.</p>
 
       <table class="table">
         <thead><tr><th scope="col">Si el dashboard muestra</th><th scope="col">La decisión a evaluar</th></tr></thead>
@@ -363,10 +375,10 @@
       </table>
 
       <div class="case">
-        <p>En el ejemplo, compresores acumula Bs&nbsp;48.200 frente a un presupuesto de Bs&nbsp;42.000 y el C-02 está detenido. Con ese dato, la conversación pasa de «hay que arreglarlo» a investigar por qué falló el rodamiento, ajustar la frecuencia de su preventivo y tener el repuesto antes de la próxima vez.</p>
+        <p>En el ejemplo, compresores acumula Bs&nbsp;48.200 contra un presupuesto de Bs&nbsp;42.000 y el C-02 está detenido. Con esos datos ya no basta con arreglarlo: toca investigar por qué falló el rodamiento, ajustar la frecuencia de su preventivo y tener el repuesto antes de la próxima falla.</p>
       </div>
       <div class="case">
-        <p>Cada decisión genera trabajo nuevo, que vuelve a registrarse. El ciclo se repite y los datos mejoran en cada vuelta. <a href="#registro">Volver a la etapa 1</a></p>
+        <p>Cada decisión genera trabajo nuevo, que vuelve a registrarse. Así, los datos mejoran con cada vuelta. <a href="#registro">Volver a la etapa 1</a></p>
       </div>
     </div>
   </section>
@@ -374,7 +386,7 @@
 </main>
 
 <footer class="wrap">
-  <p>Las órdenes, los nombres y las cifras de este sitio son datos de demostración.</p>
+  <p>Plexi Gestión. Las órdenes, los nombres y las cifras de este sitio son datos de demostración.</p>
   <a class="btn" href="dashboard.html">Ver el dashboard</a>
 </footer>
 
