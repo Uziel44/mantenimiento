@@ -60,6 +60,14 @@
   .node.goal{background:var(--gold)}
   .node.goal::after{content:"";width:12px;height:12px;background:var(--ink);transform:rotate(45deg)}
 
+  /* ---------- Muestra del dashboard ---------- */
+  .preview{padding-bottom:56px}
+  .preview .shot{display:block;max-width:560px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
+  .preview .shot:hover{border-color:var(--brand)}
+  .preview img{display:block;width:100%;height:auto}
+  .preview figcaption{font-size:13px;color:var(--ink-soft);margin-top:10px}
+  .preview figcaption a{font-weight:600}
+
   /* ---------- Tablas ---------- */
   .table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);font-size:13.5px;line-height:1.5;margin-top:20px}
   .table th,.table td{text-align:left;vertical-align:top;padding:11px 14px;border-top:1px solid var(--line)}
@@ -164,6 +172,13 @@
       </ol>
     </nav>
   </div>
+
+  <figure class="preview wrap">
+    <a class="shot" href="dashboard.html">
+      <img src="10.jpg" width="1535" height="743" alt="Abrir el dashboard. Muestra del panel de mantenimiento con indicadores, gráficos, costos por área y órdenes del día">
+    </a>
+    <figcaption>Muestra del dashboard con datos de demostración. <a href="dashboard.html">Abrir el dashboard</a></figcaption>
+  </figure>
 
   <div class="wrap">
     <div class="path">
