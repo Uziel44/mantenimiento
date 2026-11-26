@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel de Mantenimiento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ---------- Paleta (tomada de Plexi POS) ---------- */
+  :root{
+    --ink:#12271d; --ink-soft:#4f6358; --brand:#1f4a38; --brand-faint:#eaf1ec;
+    --gold:#d4a24c; --gold-faint:#f8efdc; --surface:#f5f2ec; --line:#e4d9bd; --card:#ffffff;
+    --ok:#2f8f4e;   --ok-bg:#e4f3e9;   --ok-tx:#1d6b38;
+    --warn:#d4a24c; --warn-bg:#faf0d9; --warn-tx:#8a6217;
+    --bad:#c8402f;  --bad-bg:#fbe5e1;  --bad-tx:#a82f20;
+    --shadow:0 2px 12px rgba(18,39,29,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;
+    background:var(--surface);color:var(--ink);font-size:13px;line-height:1.35;
+    display:flex;flex-direction:column;gap:12px;padding:14px 20px;min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (min-width:1100px){ body{height:100vh;min-height:680px;overflow:hidden} }
+
+  /* ---------- Encabezado ---------- */
+  header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .logo{width:40px;height:40px;border-radius:12px;background:var(--brand);display:grid;place-items:center;flex:none}
+  .logo svg{width:22px;height:22px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .title h1{font-size:20px;font-weight:700;letter-spacing:-.01em;line-height:1.15}
+  .title p{color:var(--ink-soft);font-size:12px}
+  .insight{flex:1;min-width:220px;display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;font-size:11.5px;font-weight:500;background:var(--gold-faint);color:var(--warn-tx);border:1px solid var(--line)}
+  .chip.ok{background:var(--ok-bg);color:var(--ok-tx);border-color:transparent}
+  .chip.bad{background:var(--bad-bg);color:var(--bad-tx);border-color:transparent}
+  .controls{display:flex;align-items:center;gap:8px;margin-left:auto;color:var(--ink-soft);font-size:12px}
+  select{font:inherit;font-weight:500;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 10px;cursor:pointer}
+  select:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+  .back{color:var(--brand);font-weight:600;text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 10px;margin-right:6px}
+  .back:hover{border-color:var(--brand)}
+  .back:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+
+  /* ---------- Tarjetas ---------- */
+  .card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);border:1px solid rgba(228,217,189,.5);display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden}
+  .card-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:12px 16px 0}
+  .card-h h2{font-size:13.5px;font-weight:600}
+  .card-h span{font-size:11px;color:var(--ink-soft)}
+  .card-b{flex:1;min-height:0;padding:8px 16px 12px;position:relative}
+  .scroll{overflow-y:auto}
+
+  /* ---------- KPIs ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:12px}
+  @media (max-width:1179px){ .kpis{grid-template-columns:repeat(4,minmax(0,1fr))} }
+  @media (max-width:640px){ .kpis{grid-template-columns:repeat(2,minmax(0,1fr))} }
+  @media (min-width:1100px) and (max-width:1500px){
+    body{padding:12px 14px;gap:10px}
+    .kpi{padding:9px 10px 8px}
+    .kpi-val{font-size:22px}
+    .kpi-label{font-size:11px}
+    .spark{width:40px}
+  }
+  .kpi{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:11px 13px 10px;border:1px solid rgba(228,217,189,.5);border-top:4px solid var(--c);display:flex;flex-direction:column;gap:2px;cursor:help;min-width:0}
+  .kpi.ok{--c:var(--ok)} .kpi.warn{--c:var(--warn)} .kpi.bad{--c:var(--bad)}
+  .kpi-label{font-size:11.5px;color:var(--ink-soft);font-weight:500;min-height:32px;line-height:1.3}
+  .kpi-row{display:flex;align-items:flex-end;justify-content:space-between;gap:6px}
+  .kpi-val{font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.1;white-space:nowrap}
+  .kpi-val small{font-size:12px;font-weight:500;color:var(--ink-soft);margin-left:2px;letter-spacing:0}
+  .spark{width:54px;height:24px;flex:none}
+  .kpi-meta{font-size:11px;color:var(--ink-soft)}
+  .kpi-foot{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-top:3px;flex-wrap:wrap}
+  .badge{font-size:10.5px;font-weight:600;padding:1px 8px;border-radius:99px}
+  .badge.ok{background:var(--ok-bg);color:var(--ok-tx)} .badge.warn{background:var(--warn-bg);color:var(--warn-tx)} .badge.bad{background:var(--bad-bg);color:var(--bad-tx)}
+  .delta{font-size:10.5px;font-weight:500}
+  .delta.good{color:var(--ok-tx)} .delta.badd{color:var(--bad-tx)} .delta.flat{color:var(--ink-soft)}
+
+  /* ---------- Filas de gráficos / listas ---------- */
+  main{flex:1;min-height:0;display:grid;grid-template-rows:1fr 1fr;gap:12px}
+  .row{display:grid;gap:12px;min-height:0}
+  .row-b{grid-template-columns:5fr 3fr 4fr}
+  .row-c{grid-template-columns:5fr 4fr 3fr}
+  @media (max-width:1099px){
+    main{display:flex;flex-direction:column;flex:none}
+    .row{grid-template-columns:1fr !important;flex:none}
+    .card{min-height:300px}
+    .card-b.scroll{max-height:420px}
+  }
+
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--ink-soft);padding:4px 16px 0}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  .legend i.line{height:3px;border-radius:2px;vertical-align:3px;width:14px}
+  .chart{width:100%;height:100%;display:block}
+  .chart text{font-family:inherit;font-size:10px;fill:var(--ink-soft)}
+  .tip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;border-radius:8px;padding:6px 9px;font-size:11px;line-height:1.4;opacity:0;transition:opacity .12s;white-space:nowrap;z-index:5}
+
+  /* dona */
+  .donut-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px}
+  .donut{flex:1 1 0;min-height:70px;max-height:170px;aspect-ratio:1;width:auto;max-width:100%}
+  @media (min-width:1100px) and (max-height:860px){ .dl .note{display:none} }
+  .donut text{font-family:inherit}
+  .dl{display:grid;gap:4px;font-size:11.5px;width:100%;max-width:230px}
+  .dl div{display:flex;align-items:center;gap:7px}
+  .dl i{width:10px;height:10px;border-radius:3px;flex:none}
+  .dl b{margin-left:auto;font-weight:600}
+
+  /* costos */
+  .cost{display:grid;gap:9px}
+  .cost-row .top{display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:3px}
+  .cost-row .top span:last-child{color:var(--ink-soft)}
+  .track{position:relative;height:9px;background:var(--brand-faint);border-radius:99px}
+  .track .bar{height:100%;border-radius:99px;background:var(--ok)}
+  .track .bar.warn{background:var(--warn)} .track .bar.bad{background:var(--bad)}
+  .track .mark{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);border-radius:2px}
+
+  /* tablas / listas */
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);font-weight:500;text-align:left;padding:4px 6px;position:sticky;top:0;background:var(--card)}
+  td{padding:7px 6px;border-top:1px solid var(--surface);vertical-align:middle}
+  td .code{color:var(--brand);font-weight:600}
+  td small{display:block;color:var(--ink-soft);font-size:11px}
+  .pri{font-size:10.5px;font-weight:600;padding:1px 8px;border-radius:99px;white-space:nowrap}
+  .pri.urg{background:var(--bad-bg);color:var(--bad-tx)} .pri.alta{background:var(--warn-bg);color:var(--warn-tx)} .pri.media{background:var(--brand-faint);color:var(--brand)} .pri.baja{background:var(--surface);color:var(--ink-soft)}
+  .unassigned{color:var(--bad-tx);font-weight:500}
+  .foot{padding:8px 16px;border-top:1px solid var(--surface);font-size:11.5px;color:var(--ink-soft)}
+
+  .feed{list-style:none;display:grid;gap:2px}
+  .feed li{display:flex;gap:10px;padding:7px 0;border-top:1px solid var(--surface)}
+  .feed li:first-child{border-top:0}
+  .dot{width:26px;height:26px;border-radius:8px;flex:none;display:grid;place-items:center;font-size:13px;font-weight:700}
+  .dot.bad{background:var(--bad-bg);color:var(--bad-tx)} .dot.warn{background:var(--warn-bg);color:var(--warn-tx)} .dot.ok{background:var(--ok-bg);color:var(--ok-tx)}
+  .feed p{font-size:12px;line-height:1.35}
+  .feed time{font-size:10.5px;color:var(--ink-soft)}
+
+  .asset{padding:7px 0;border-top:1px solid var(--surface)}
+  .asset:first-child{border-top:0}
+  .asset .top{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:12px;margin-bottom:4px}
+  .asset .top b{font-weight:600}
+  .asset .track{height:6px}
+  .asset .sub{font-size:10.5px;color:var(--ink-soft);margin-top:3px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.2-.5-.5-2.2z"/></svg>
+  </div>
+  <div class="title">
+    <h1>Panel de Mantenimiento</h1>
+    <p id="fecha">Planta Central</p>
+  </div>
+  <div class="insight" id="insight" aria-live="polite"></div>
+  <div class="controls">
+    <a class="back" href="index.html">Ver la hoja de ruta</a>
+    <label for="gestion">Gestión:</label>
+    <select id="gestion">
+      <option value="2026">2026</option>
+      <option value="2025">2025</option>
+    </select>
+  </div>
+</header>
+
+<section class="kpis" id="kpis" aria-label="Indicadores clave"></section>
+
+<main>
+  <div class="row row-b">
+    <article class="card">
+      <div class="card-h"><h2>Disponibilidad y MTTR por mes</h2><span id="trendSub"></span></div>
+      <div class="legend">
+        <span><i class="line" style="background:var(--brand)"></i>Disponibilidad (%)</span>
+        <span><i style="background:var(--gold)"></i>MTTR (horas)</span>
+        <span><i class="line" style="background:repeating-linear-gradient(90deg,var(--bad) 0 4px,transparent 4px 7px)"></i>Meta disponibilidad</span>
+      </div>
+      <div class="card-b" id="trend"><div class="tip" id="tip"></div></div>
+    </article>
+
+    <article class="card">
+      <div class="card-h"><h2>Trabajo planeado vs correctivo</h2><span>Meta 80 / 20</span></div>
+      <div class="card-b"><div class="donut-wrap" id="donut"></div></div>
+    </article>
+
+    <article class="card">
+      <div class="card-h"><h2>Costo por área vs presupuesto</h2><span>Acumulado, Bs</span></div>
+      <div class="card-b scroll"><div class="cost" id="cost"></div></div>
+    </article>
+  </div>
+
+  <div class="row row-c">
+    <article class="card">
+      <div class="card-h"><h2>Órdenes de trabajo para hoy</h2><span id="otCount"></span></div>
+      <div class="card-b scroll" style="padding-top:4px">
+        <table>
+          <thead><tr><th>Código</th><th>Trabajo / Activo</th><th>Prioridad</th><th>Técnico</th><th>Hora</th></tr></thead>
+          <tbody id="ot"></tbody>
+        </table>
+      </div>
+      <div class="foot" id="otFoot"></div>
+    </article>
+
+    <article class="card">
+      <div class="card-h"><h2>Alertas y actividad</h2><span>Últimas horas</span></div>
+      <div class="card-b scroll"><ul class="feed" id="feed"></ul></div>
+    </article>
+
+    <article class="card">
+      <div class="card-h"><h2>Activos críticos</h2><span id="assetSub"></span></div>
+      <div class="card-b scroll" id="assets"></div>
+    </article>
+  </div>
+</main>
+
+<script>
+/* =====================================================================
+   DATOS DE EJEMPLO  (reemplazar por datos reales / una API)
+   ===================================================================== */
+const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+/* Definición de cada indicador: etiqueta, unidad, meta, regla de semáforo y fórmula (tooltip) */
+const KPI_DEF = [
+  { id:'disp',   label:'Disponibilidad de activos',      unit:'%',  dec:1, better:'up',   dUnit:'pts', meta:'Meta ≥ 98 %',
+    st:v => v>=98 ? 'ok' : v>=95 ? 'warn' : 'bad',
+    def:'Disponibilidad = (tiempo programado − paros) ÷ tiempo programado × 100. Indicador rezagado.' },
+  { id:'pm',     label:'Cumplimiento del preventivo',    unit:'%',  dec:0, better:'up',   dUnit:'pts', meta:'Meta ≥ 90 %',
+    st:v => v>=90 ? 'ok' : v>=80 ? 'warn' : 'bad',
+    def:'Cumplimiento PM = preventivos hechos a tiempo ÷ preventivos programados × 100. Indicador adelantado.' },
+  { id:'cron',   label:'Cumplimiento del cronograma',    unit:'%',  dec:0, better:'up',   dUnit:'pts', meta:'Meta ≥ 85 %',
+    st:v => v>=85 ? 'ok' : v>=75 ? 'warn' : 'bad',
+    def:'Órdenes ejecutadas en la fecha planificada ÷ órdenes planificadas × 100.' },
+  { id:'plan',   label:'Trabajo planeado',               unit:'%',  dec:0, better:'up',   dUnit:'pts', meta:'Meta ≥ 80 %',
+    st:v => v>=80 ? 'ok' : v>=65 ? 'warn' : 'bad',
+    def:'Órdenes planeadas ÷ órdenes totales × 100. La meta usual es 80 % planeado / 20 % correctivo.' },
+  { id:'backlog',label:'Backlog de órdenes',             unit:'sem',dec:1, better:'down', dUnit:'sem', meta:'Sano 2–4 sem',
+    st:v => v<=4 ? 'ok' : v<=6 ? 'warn' : 'bad',
+    def:'Backlog = horas de órdenes abiertas ÷ horas semanales disponibles del equipo. Sano: 2 a 4 semanas; más de 6 es alerta.' },
+  { id:'mtbf',   label:'MTBF (tiempo entre fallas)',     unit:'h',  dec:0, better:'up',   dUnit:'h',   meta:'Meta ≥ 400 h',
+    st:v => v>=400 ? 'ok' : v>=300 ? 'warn' : 'bad',
+    def:'MTBF = horas de operación ÷ número de fallas. Se lee mensual: el semanal es muy ruidoso.' },
+  { id:'mttr',   label:'MTTR (tiempo de reparación)',    unit:'h',  dec:1, better:'down', dUnit:'h',   meta:'Meta ≤ 4 h',
+    st:v => v<=4 ? 'ok' : v<=6 ? 'warn' : 'bad',
+    def:'MTTR = horas totales de reparación ÷ número de reparaciones. Si sube: falta de repuestos, de habilidades o de datos de diagnóstico.' },
+  { id:'costo',  label:'Desvío de costo vs presupuesto', unit:'%',  dec:1, better:'down', dUnit:'pts', meta:'Meta ≤ +5 %', signed:true,
+    st:v => v<=5 ? 'ok' : v<=10 ? 'warn' : 'bad',
+    def:'Desvío = (costo real ÷ presupuesto − 1) × 100. Se calcula con el costo acumulado por área.' },
+];
+
+const DATA = {
+  2026: {
+    // valor actual, valor del mes anterior y últimos 6 meses (para la mini-línea)
+    kpi: {
+      disp:   { prev:96.1, spark:[95.9,96.2,95.8,96.4,96.0,96.6,96.3,96.1,96.8].slice(-6), v:96.8 },
+      pm:     { prev:88,   spark:[84,86,85,89,88,91], v:91 },
+      cron:   { prev:83,   spark:[80,81,84,83,83,82], v:82 },
+      plan:   { prev:70,   spark:[66,67,68,69,70,74], v:74 },
+      backlog:{ prev:4.1,  spark:[5.2,4.9,4.6,4.4,4.1,3.6], v:3.6 },
+      mtbf:   { prev:398,  spark:[372,380,391,386,398,412], v:412 },
+      mttr:   { prev:4.6,  spark:[4.9,4.7,4.4,4.7,4.6,4.2], v:4.2 },
+      costo:  { prev:5.8,  spark:[7.1,6.5,6.2,6.0,5.8,null], v:null },   // v se calcula con los costos
+    },
+    tendencia: {
+      disp: [95.4,95.9,96.2,95.8,96.4,96.0,96.6,96.3,96.1,96.1,96.8,null],
+      mttr: [5.1,4.9,5.0,4.8,4.7,4.6,4.4,4.7,4.5,4.6,4.2,null],
+    },
+    mezcla: { preventivo:58, predictivo:16, correctivo:26 },
+    costos: [
+      { area:'Compresores',      real:48200, ppto:42000 },
+      { area:'Bombas',           real:31500, ppto:34000 },
+      { area:'Montacargas',      real:27800, ppto:26000 },
+      { area:'Climatización',    real:19400, ppto:22000 },
+      { area:'Línea de empaque', real:38900, ppto:36000 },
+    ],
+  },
+  2025: {
+    kpi: {
+      disp:   { prev:95.6, spark:[95.0,95.5,95.1,95.7,95.4,95.9].slice(-6), v:96.0 },
+      pm:     { prev:85,   spark:[80,82,83,84,85,85], v:86 },
+      cron:   { prev:79,   spark:[76,77,78,78,79,79], v:78 },
+      plan:   { prev:66,   spark:[62,63,64,65,66,66], v:68 },
+      backlog:{ prev:5.1,  spark:[6.2,5.9,5.6,5.4,5.1,5.1], v:4.8 },
+      mtbf:   { prev:358,  spark:[330,338,345,350,358,358], v:365 },
+      mttr:   { prev:5.1,  spark:[5.7,5.3,5.4,5.2,5.1,5.1], v:5.0 },
+      costo:  { prev:8.8,  spark:[10.1,9.6,9.2,9.0,8.8,null], v:null },
+    },
+    tendencia: {
+      disp: [94.1,94.6,94.9,95.2,95.0,95.5,95.1,95.7,95.4,95.9,95.6,96.0],
+      mttr: [6.2,6.0,5.8,5.9,5.6,5.5,5.7,5.3,5.4,5.2,5.1,5.0],
+    },
+    mezcla: { preventivo:50, predictivo:18, correctivo:32 },
+    costos: [
+      { area:'Compresores',      real:51000, ppto:44000 },
+      { area:'Bombas',           real:36000, ppto:35000 },
+      { area:'Montacargas',      real:30500, ppto:28000 },
+      { area:'Climatización',    real:22000, ppto:22000 },
+      { area:'Línea de empaque', real:41500, ppto:37000 },
+    ],
+  },
+};
+
+/* Órdenes del día, actividad y activos críticos (iguales para ambas gestiones) */
+const ORDENES = [
+  { cod:'OT004976', trab:'Cambio de rodamiento',        act:'Compresor C-02',   pri:'urg',   tec:'Marco Quispe',   hora:'08:00', hecha:false },
+  { cod:'OT004941', trab:'Mantenimiento preventivo',    act:'Bomba B-14',       pri:'media', tec:'Luis Mamani',    hora:'08:30', hecha:true  },
+  { cod:'OT004977', trab:'Inspección de seguridad',     act:'Montacargas M-03', pri:'alta',  tec:null,             hora:'09:00', hecha:false },
+  { cod:'OT004969', trab:'Lubricación de cadena',       act:'Línea de empaque', pri:'media', tec:'Rosa Condori',   hora:'10:00', hecha:true  },
+  { cod:'OT004970', trab:'Revisión de filtros',         act:'Climatización A2', pri:'baja',  tec:null,             hora:'11:30', hecha:false },
+  { cod:'OT004971', trab:'Calibración de sensores',     act:'Caldera K-01',     pri:'alta',  tec:'Marco Quispe',   hora:'14:00', hecha:false },
+  { cod:'OT004972', trab:'Cambio de aceite',            act:'Generador G-01',   pri:'media', tec:'Luis Mamani',    hora:'15:30', hecha:false },
+  { cod:'OT004973', trab:'Inspección diaria',           act:'Bomba B-07',       pri:'baja',  tec:null,             hora:'17:00', hecha:false },
+];
+const PRI_TXT = { urg:'Urgente', alta:'Alta', media:'Media', baja:'Baja' };
+
+const ACTIVIDAD = [
+  { sev:'bad',  ico:'!', txt:'Compresor C-02 detenido por falla de rodamiento. Se generó la OT004976.', t:'hace 25 min' },
+  { sev:'warn', ico:'▲', txt:'El cumplimiento del cronograma (82 %) está por debajo de la meta de 85 %.', t:'hace 1 h' },
+  { sev:'bad',  ico:'!', txt:'OT004969 vencida hace 2 días sin técnico asignado.', t:'hace 2 h' },
+  { sev:'warn', ico:'◆', txt:'Repuesto crítico sin stock: sello mecánico de la bomba B-14.', t:'hace 3 h' },
+  { sev:'ok',   ico:'✓', txt:'Preventivo mensual de bombas completado (12 de 12).', t:'ayer' },
+];
+
+const CRITICOS = [
+  { nom:'Compresor C-02',   est:'bad',  txt:'Con falla',  disp:62, sub:'Detenido desde las 07:35' },
+  { nom:'Caldera K-01',     est:'warn', txt:'En riesgo',  disp:91, sub:'Vibración sobre el límite' },
+  { nom:'Generador G-01',   est:'ok',   txt:'Operativo',  disp:99, sub:'Último preventivo: hace 12 días' },
+  { nom:'Montacargas M-03', est:'warn', txt:'En riesgo',  disp:94, sub:'Inspección de seguridad pendiente' },
+  { nom:'Bomba B-14',       est:'ok',   txt:'Operativo',  disp:98, sub:'Esperando repuesto (sello)' },
+];
+
+/* =====================================================================
+   UTILIDADES
+   ===================================================================== */
+const $ = id => document.getElementById(id);
+const fmt = (v, dec=0, signed=false) =>
+  v.toLocaleString('es-BO', { minimumFractionDigits:dec, maximumFractionDigits:dec, signDisplay: signed ? 'exceptZero' : 'auto' });
+const bs = v => 'Bs ' + v.toLocaleString('es-BO', { maximumFractionDigits:0 });
+const STATUS_TXT = { ok:'En meta', warn:'Atención', bad:'Crítico' };
+const COLOR = { ok:'var(--ok)', warn:'var(--warn)', bad:'var(--bad)' };
+
+/* Desvío de costo calculado con los costos del año */
+function desvioCosto(d){
+  const real = d.costos.reduce((s,c)=>s+c.real,0), ppto = d.costos.reduce((s,c)=>s+c.ppto,0);
+  return (real/ppto - 1) * 100;
+}
+
+/* =====================================================================
+   RENDER
+   ===================================================================== */
+function renderKpis(d){
+  const html = KPI_DEF.map(k => {
+    const x = d.kpi[k.id];
+    const v = k.id === 'costo' ? desvioCosto(d) : x.v;
+    const st = k.st(v);
+    const diff = v - x.prev;
+    const good = k.better === 'up' ? diff >= 0 : diff <= 0;
+    const flat = Math.abs(diff) < 0.05;
+    const arrow = flat ? '■' : diff > 0 ? '▲' : '▼';
+    const cls = flat ? 'flat' : good ? 'good' : 'badd';
+    const pts = x.spark.map(n => n === null ? v : n);
+    return `
+      <div class="kpi ${st}" title="${k.def}">
+        <div class="kpi-label">${k.label}</div>
+        <div class="kpi-row">
+          <div class="kpi-val">${fmt(v, k.dec, k.signed)}<small>${k.unit}</small></div>
+          ${spark(pts, COLOR[st])}
+        </div>
+        <div class="kpi-meta">${k.meta}</div>
+        <div class="kpi-foot">
+          <span class="badge ${st}">${STATUS_TXT[st]}</span>
+          <span class="delta ${cls}">${arrow} ${fmt(Math.abs(diff), k.dec)} ${k.dUnit}</span>
+        </div>
+      </div>`;
+  }).join('');
+  $('kpis').innerHTML = html;
+}
+
+function spark(vals, color){
+  const w=54, h=24, min=Math.min(...vals), max=Math.max(...vals), r=(max-min)||1;
+  const p = vals.map((v,i)=>[ (i/(vals.length-1))*(w-4)+2, h-3-((v-min)/r)*(h-6) ]);
+  const last = p[p.length-1];
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" aria-hidden="true">
+    <polyline points="${p.map(q=>q.join(',')).join(' ')}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${last[0]}" cy="${last[1]}" r="2.4" fill="${color}"/></svg>`;
+}
+
+/* Lectura cruzada: reglas simples que explican qué significan los indicadores juntos */
+function renderInsight(d){
+  const k = id => id==='costo' ? desvioCosto(d) : d.kpi[id].v;
+  const out = [];
+  if (k('pm') >= 90 && k('cron') < 85)   out.push(['', 'Preventivo al día pero cronograma bajo: revisar la planificación.']);
+  if (k('plan') < 80 && k('backlog') > 3) out.push(['', 'Poco trabajo planeado con backlog alto: posible falta de personal o de prioridades.']);
+  if (k('mttr') > 4)                      out.push(['', 'MTTR sobre la meta: revisar repuestos y capacitación.']);
+  if (!out.length)                        out.push(['ok', 'Todos los indicadores clave dentro de la meta.']);
+  $('insight').innerHTML = out.slice(0,2).map(([c,t]) => `<span class="chip ${c}">${t}</span>`).join('');
+}
+
+/* ---------- Gráfico de tendencia: barras (MTTR) + línea (disponibilidad) ---------- */
+function renderTrend(d){
+  const box = $('trend'), tip = $('tip');
+  box.querySelectorAll('svg').forEach(s => s.remove());
+  const cs = getComputedStyle(box);
+  const W = Math.floor(box.clientWidth  - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight));
+  const H = Math.floor(box.clientHeight - parseFloat(cs.paddingTop)  - parseFloat(cs.paddingBottom));
+  if (W < 50 || H < 50) return;
+  const m = { l:34, r:30, t:10, b:22 }, iw = W-m.l-m.r, ih = H-m.t-m.b, band = iw/12;
+  const dMin = 94, dMax = 100, tMax = 8;
+  const yD = v => m.t + ih - ((v-dMin)/(dMax-dMin))*ih;
+  const yT = v => m.t + ih - (v/tMax)*ih;
+  const xc = i => m.l + band*(i+.5);
+  const { disp, mttr } = d.tendencia;
+  let s = `<svg class="chart" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Disponibilidad y MTTR mensual">`;
+
+  // cuadrícula + ejes (izq: disponibilidad, der: MTTR)
+  for (let i=0;i<=3;i++){
+    const y = m.t + ih*(i/3);
+    s += `<line x1="${m.l}" x2="${W-m.r}" y1="${y}" y2="${y}" stroke="#eee6d2" stroke-width="1"/>`;
+    s += `<text x="${m.l-6}" y="${y+3}" text-anchor="end">${fmt(dMax-(dMax-dMin)*(i/3),0)}%</text>`;
+    s += `<text x="${W-m.r+6}" y="${y+3}">${fmt(tMax-tMax*(i/3),0)} h</text>`;
+  }
+  // barras MTTR
+  mttr.forEach((v,i) => { if (v==null) return;
+    const bw = band*.5;
+    s += `<rect x="${xc(i)-bw/2}" y="${yT(v)}" width="${bw}" height="${m.t+ih-yT(v)}" rx="4" fill="var(--gold)" opacity=".55"/>`;
+  });
+  // meta de disponibilidad
+  s += `<line x1="${m.l}" x2="${W-m.r}" y1="${yD(98)}" y2="${yD(98)}" stroke="var(--bad)" stroke-width="1.3" stroke-dasharray="5 4"/>`;
+  // línea de disponibilidad
+  const pts = disp.map((v,i)=> v==null ? null : [xc(i), yD(v)]).filter(Boolean);
+  s += `<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="var(--brand)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;
+  pts.forEach(p => s += `<circle cx="${p[0]}" cy="${p[1]}" r="3.4" fill="#fff" stroke="var(--brand)" stroke-width="2"/>`);
+  // etiquetas de meses + zonas de hover
+  MESES.forEach((n,i) => {
+    s += `<text x="${xc(i)}" y="${H-6}" text-anchor="middle">${n}</text>`;
+    s += `<rect class="hz" data-i="${i}" x="${m.l+band*i}" y="${m.t}" width="${band}" height="${ih}" fill="transparent"/>`;
+  });
+  s += `</svg>`;
+  box.insertAdjacentHTML('afterbegin', s);
+
+  box.querySelectorAll('.hz').forEach(r => {
+    r.addEventListener('mouseenter', () => {
+      const i = +r.dataset.i;
+      if (disp[i]==null) return;
+      tip.innerHTML = `<b>${MESES[i]}</b><br>Disponibilidad: ${fmt(disp[i],1)} %<br>MTTR: ${fmt(mttr[i],1)} h`;
+      tip.style.opacity = 1;
+      const x = Math.min(xc(i)+10, W-tip.offsetWidth-4);
+      tip.style.left = x+'px'; tip.style.top = Math.max(m.t, yD(disp[i])-50)+'px';
+    });
+    r.addEventListener('mouseleave', () => tip.style.opacity = 0);
+  });
+}
+
+/* ---------- Dona: preventivo / predictivo / correctivo ---------- */
+function renderDonut(d){
+  const { preventivo, predictivo, correctivo } = d.mezcla;
+  const planeado = preventivo + predictivo;
+  const R = 46, C = 2*Math.PI*R;
+  const seg = [
+    { n:'Preventivo',           v:preventivo, c:'var(--brand)' },
+    { n:'Predictivo / mejoras', v:predictivo, c:'var(--gold)' },
+    { n:'Correctivo',           v:correctivo, c:'var(--bad)' },
+  ];
+  let off = 0, arcs = '';
+  seg.forEach(s => {
+    const len = C*s.v/100;
+    arcs += `<circle cx="60" cy="60" r="${R}" fill="none" stroke="${s.c}" stroke-width="15"
+             stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 60 60)"/>`;
+    off += len;
+  });
+  // marca de la meta (80 % planeado)
+  const a = (0.8*360-90)*Math.PI/180, x1=60+(R-11)*Math.cos(a), y1=60+(R-11)*Math.sin(a), x2=60+(R+11)*Math.cos(a), y2=60+(R+11)*Math.sin(a);
+  const st = KPI_DEF[3].st(planeado);
+  $('donut').innerHTML = `
+    <svg class="donut" viewBox="0 0 120 120" role="img" aria-label="${planeado}% de trabajo planeado">
+      <circle cx="60" cy="60" r="${R}" fill="none" stroke="var(--brand-faint)" stroke-width="15"/>
+      ${arcs}
+      <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--ink)" stroke-width="2"/>
+      <text x="60" y="58" text-anchor="middle" font-size="20" font-weight="700" fill="var(--ink)">${planeado}%</text>
+      <text x="60" y="73" text-anchor="middle" font-size="8.5" fill="${COLOR[st]==='var(--warn)'?'var(--warn-tx)':COLOR[st]}" font-weight="600">planeado</text>
+    </svg>
+    <div class="dl">
+      ${seg.map(s => `<div><i style="background:${s.c}"></i>${s.n}<b>${s.v}%</b></div>`).join('')}
+      <div class="note" style="color:var(--ink-soft);font-size:10.5px;margin-top:2px">La marca negra indica la meta de 80 % planeado.</div>
+    </div>`;
+}
+
+/* ---------- Costos por área ---------- */
+function renderCost(d){
+  const max = Math.max(...d.costos.flatMap(c => [c.real, c.ppto]));
+  $('cost').innerHTML = d.costos.map(c => {
+    const dev = (c.real/c.ppto - 1)*100;
+    const st = dev <= 5 ? 'ok' : dev <= 10 ? 'warn' : 'bad';
+    return `<div class="cost-row">
+      <div class="top"><span>${c.area}</span><span>${bs(c.real)} / ${bs(c.ppto)} · <b style="color:var(--${st}-tx)">${fmt(dev,1,true)}%</b></span></div>
+      <div class="track" title="Real ${bs(c.real)} · Presupuesto ${bs(c.ppto)}">
+        <div class="bar ${st==='ok'?'':st}" style="width:${c.real/max*100}%"></div>
+        <div class="mark" style="left:${c.ppto/max*100}%"></div>
+      </div></div>`;
+  }).join('') + `<div style="font-size:10.5px;color:var(--ink-soft)">La marca negra indica el presupuesto de cada área.</div>`;
+}
+
+/* ---------- Órdenes de hoy, actividad y activos críticos ---------- */
+function renderOrdenes(){
+  $('ot').innerHTML = ORDENES.map(o => `
+    <tr>
+      <td><span class="code">${o.cod}</span></td>
+      <td>${o.trab}<small>${o.act}</small></td>
+      <td><span class="pri ${o.pri}">${PRI_TXT[o.pri]}</span></td>
+      <td>${o.tec ?? '<span class="unassigned">Sin asignar</span>'}</td>
+      <td>${o.hecha ? '✓ ' : ''}${o.hora}</td>
+    </tr>`).join('');
+  const hechas = ORDENES.filter(o=>o.hecha).length;
+  $('otCount').textContent = ORDENES.length + ' programadas';
+  $('otFoot').innerHTML = `Órdenes terminadas: <b>${hechas}/${ORDENES.length}</b> · Sin asignar: <b>${ORDENES.filter(o=>!o.tec).length}</b>`;
+}
+
+function renderFeed(){
+  $('feed').innerHTML = ACTIVIDAD.map(a => `
+    <li><span class="dot ${a.sev}" aria-hidden="true">${a.ico}</span>
+    <div><p>${a.txt}</p><time>${a.t}</time></div></li>`).join('');
+}
+
+function renderAssets(){
+  const fallas = CRITICOS.filter(a=>a.est==='bad').length;
+  $('assetSub').textContent = fallas + (fallas===1 ? ' con falla' : ' con fallas');
+  $('assets').innerHTML = CRITICOS.map(a => `
+    <div class="asset">
+      <div class="top"><b>${a.nom}</b><span class="badge ${a.est}">${a.txt}</span></div>
+      <div class="track" title="Disponibilidad ${a.disp}%"><div class="bar ${a.est==='ok'?'':a.est}" style="width:${a.disp}%"></div></div>
+      <div class="sub">Disp. ${a.disp}% · ${a.sub}</div>
+    </div>`).join('');
+}
+
+/* =====================================================================
+   ARRANQUE
+   ===================================================================== */
+function render(){
+  const year = $('gestion').value, d = DATA[year];
+  $('trendSub').textContent = 'Gestión ' + year;
+  renderKpis(d); renderInsight(d); renderTrend(d); renderDonut(d); renderCost(d);
+}
+
+const hoy = new Date().toLocaleDateString('es-BO', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+$('fecha').textContent = 'Planta Central · ' + hoy.charAt(0).toUpperCase() + hoy.slice(1);
+
+renderOrdenes(); renderFeed(); renderAssets(); render();
+$('gestion').addEventListener('change', render);
+new ResizeObserver(() => renderTrend(DATA[$('gestion').value])).observe($('trend'));
+</script>
+</body>
+</html>
